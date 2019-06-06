@@ -1,57 +1,33 @@
-import random
+import gym
+import numpy as np
 
-from beamngpy import BeamNGpy, Scenario, Vehicle
-from beamngpy.sensors import Camera
-from threading import Thread
-from time import sleep
-from PIL import Image
-
-random.seed(1700)
-
-
-def wait():
-    sleep(1000000)
+from stable_baselines.ddpg.policies import MlpPolicy, CnnPolicy
+from stable_baselines.common.vec_env import DummyVecEnv
+from stable_baselines.ddpg.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise, AdaptiveParamNoiseSpec
+from stable_baselines import DDPG
+from impl.env import BeamNGenv
+from simulation import Simulation
 
 
-thread = Thread(target=wait)
-thread.start()
+simulation = Simulation()
+#env = gym.make('MountainCarContinuous-v0')
+env = DummyVecEnv([lambda: BeamNGenv(simulation=simulation)])
 
-# Instantiate BeamNGpy instance running the simulator from the given path,
-# communicating over localhost:64256
-bng = BeamNGpy('localhost', 64256, home='C:\\Users\\Tim\\Documents\\research\\trunk')
+# the noise objects for DDPG
+n_actions = env.action_space.shape[-1]
+param_noise = None
+action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
 
-# Create a scenario in west_coast_usa called 'example'
-scenario = Scenario('west_coast_usa', 'example')
-# Create an ETK800 with the licence plate 'PYTHON'
-vehicle = Vehicle('ego_vehicle', model='etk800', licence='RL FTW', color='Red')
-front_camera = Camera(pos=(-0.3, 1, 1.0), direction=(0, 1, 0), fov=120, resolution=(1024, 1024), colour=True,
-                      annotation=True, depth=True)
-vehicle.attach_sensor("monocular camera", front_camera)
+model = DDPG(CnnPolicy, env, verbose=1, param_noise=param_noise, action_noise=action_noise)
+model.learn(total_timesteps=400000)
+model.save("ddpg_beamng")
 
-# Add it to our scenario at this position and rotation
-scenario.add_vehicle(vehicle, pos=(-717, 101, 118), rot=(0, 0, 45))
-# Place files defining our scenario for the simulator to read
-scenario.make(bng)
+#del model # remove to demonstrate saving and loading
 
-# Launch BeamNG.research
-bng.open()
+#model = DDPG.load("ddpg_beamng")
 
-bng.set_deterministic()
-bng.set_steps_per_second(60)
-# Load and start our scenario
-bng.load_scenario(scenario)
-bng.start_scenario()
-bng.pause()
-bng.hide_hud()
-
-
-throttle = random.uniform(0.0, 1.0)
-steering = random.uniform(-1.0, 1.0)
-brake = random.choice([0, 0, 0, 1])
-vehicle.control(throttle=throttle, steering=steering, brake=brake)
-
-bng.step(20)
-sensors = bng.poll_sensors(vehicle)
-print(sensors)
-sensors['monocular camera']['depth'].show()
-
+#obs = env.reset()
+#while True:
+    #action, _states = model.predict(obs)
+    #obs, rewards, dones, info = env.step(action)
+    #env.render()
