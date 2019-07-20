@@ -25,7 +25,8 @@ def main():
     parser.add_argument('--batch-size', help='Batch size', type=int, default=64)
     parser.add_argument('--learning-rate', help='Learning rate', type=float, default=1e-4)
     parser.add_argument('--kl-tolerance', help='KL tolerance (to cap KL loss)', type=float, default=0.5)
-    parser.add_argument('--beta', help='Weight for kl loss', type=float, default=1.0)
+    parser.add_argument(''
+                        '--beta', help='Weight for kl loss', type=float, default=1.0)
     parser.add_argument('--n-epochs', help='Number of epochs', type=int, default=10)
     parser.add_argument('--verbose', help='Verbosity', type=int, default=1)
     args = parser.parse_args()

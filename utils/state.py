@@ -12,8 +12,8 @@ TUNNEL = {"pos": (-392.8107604980469, -315.23541259765625, 97.71546936035156)}
 FOREST = {"pos": (947.3220825195312, -948.9266967773438, 167.6211395263672), "rot": (0, 0, 115)}
 
 class Road(object):
-    def __init__(self):
-        self._checkpoints = self._csv()
+    #def __init__(self):
+        # self._checkpoints = self._csv()
 
     def _csv(self):
         v = []
