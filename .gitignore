@@ -3,9 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.json
-*.pkl
 .idea/
-logs/
 
 # C extensions
 *.so

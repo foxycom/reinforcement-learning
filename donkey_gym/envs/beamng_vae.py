@@ -9,7 +9,7 @@ from gym import spaces
 from gym.utils import seeding
 
 from config import INPUT_DIM, MIN_STEERING, MAX_STEERING, JERK_REWARD_WEIGHT, MAX_STEERING_DIFF
-from .simulation import Simulation
+from .beamng_sim import Simulation
 
 
 class BeamNGenv(gym.Env):

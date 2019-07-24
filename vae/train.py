@@ -11,8 +11,8 @@ from tqdm import tqdm
 
 from config import ROI
 from vae.controller import VAEController
-from .data_loader import DataLoader
-from .model import ConvVAE
+from data_loader import DataLoader
+from model import ConvVAE
 
 
 def main():

@@ -28,7 +28,7 @@ MAX_STEERING_DIFF = 0.1
 REWARD_CRASH = -10
 # Penalize the agent even more when being fast
 CRASH_SPEED_WEIGHT = 5
-STEP_CRASH_WEIGHT = 0.1
+STEP_CRASH_WEIGHT = 0.03
 
 # Symmetric command
 MAX_STEERING = 1

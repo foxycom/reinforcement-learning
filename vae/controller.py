@@ -4,6 +4,7 @@
 
 import numpy as np
 
+from PIL import Image
 from config import ROI
 from .model import ConvVAE
 from .data_loader import denormalize, preprocess_input
@@ -74,6 +75,7 @@ class VAEController:
         arr = self.target_vae.decode(arr)
         # Denormalize
         arr = denormalize(arr, mode=self.normalization_mode)
+
         return arr
 
     def save(self, path):
