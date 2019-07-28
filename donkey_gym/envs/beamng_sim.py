@@ -10,7 +10,9 @@ from threading import Thread
 from config import THROTTLE_REWARD_WEIGHT, CRASH_SPEED_WEIGHT, REWARD_CRASH, \
     BEAMNG_HOME, ROI, CAMERA_WIDTH, CAMERA_HEIGHT, STEP_CRASH_WEIGHT
 from shapely.geometry import Point
+from .roadnodes import RoadNodes
 
+rn = RoadNodes().get('test')
 
 def update_prefab(prefab_path):
     for i, line in enumerate(fileinput.input(prefab_path, inplace=1)):
@@ -19,7 +21,7 @@ def update_prefab(prefab_path):
 
 def get_road():
     r = SimulationRoad()
-    with open('C:\\Users\\Tim\\PycharmProjects\\reinforcement-learning\\road.csv', newline='') as file:
+    with open(rn['csv'], newline='') as file:
         reader = csv.reader(file)
         for row in reader:
             number_row = list()
@@ -47,22 +49,15 @@ class Simulation(object):
         self.scenario = Scenario('smallgrid', 'DDPG', authors='Vsevolod Tymofyeyev',
                                  description='Reinforcement learning')
 
-        nodes = [
-            (-43.21, 43.48, 0, 6), (1.247, 103.49, 0, 6), (96.15, 160.86, 0, 6), (274.30, 157.66, 0, 6),
-            (261.675, -5.71, 0, 6),
-            (150.44, -91.00, 0, 6), (74.234, -98.12, 0, 6), (-19.89, -67.01, 0, 6), (-65.96, -5.74, 0, 6),
-            (-68.61, 118.589, 0, 6),
-            (-120.263, 211.858, 0, 6), (-290.01, 240.968, 0, 6), (-337.65, 46.14, 0, 6), (-121.98, -14.45, 0, 6)
-        ]
         road = Road(material='a_asphalt_01_a', rid='road', looped=True)
-        road.nodes.extend(nodes)
+        road.nodes.extend(rn['nodes'])
         self.scenario.add_road(road)
 
         self.vehicle = Vehicle('ego_vehicle', model='etk800', licence='RL FTW', color='Red')
         front_camera = Camera(pos=(0, 1.3, 1.8), direction=(0, 1, -0.3), fov=90, resolution=(CAMERA_WIDTH, CAMERA_HEIGHT),
                               colour=True, depth=False, annotation=False)
         self.vehicle.attach_sensor("front_camera", front_camera)
-        self.scenario.add_vehicle(self.vehicle, pos=(-43.21, 43.48, 0), rot=(0, 0, -135))
+        self.scenario.add_vehicle(self.vehicle, pos=rn['pos'], rot=rn['rot'])
 
         self.scenario.make(self.bng)
         prefab_path = self.scenario.get_prefab_path()

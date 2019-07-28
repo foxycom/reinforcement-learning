@@ -8,6 +8,7 @@ from config import CAMERA_HEIGHT, CAMERA_WIDTH, ROI
 import numpy as np
 from PIL import Image
 import cv2
+from donkey_gym.envs.roadnodes import RoadNodes
 
 from donkey_gym.envs.beamng_sim import SimulationRoad, RoadPoint
 
@@ -35,14 +36,9 @@ bng = BeamNGpy('localhost', 64256, home='C:\\Users\\Tim\\Documents\\research\\tr
 # Create a scenario in west_coast_usa called 'example'
 scenario = Scenario('smallgrid', 'generate_data')
 
-nodes = [
-    (-43.21, 43.48, 0, 6), (1.247, 103.49, 0, 6), (96.15, 160.86, 0, 6), (274.30, 157.66, 0, 6), (261.675, -5.71, 0, 6),
-    (150.44, -91.00, 0, 6), (74.234, -98.12, 0, 6), (-19.89, -67.01, 0, 6), (-65.96, -5.74, 0, 6),
-    (-68.61, 118.589, 0, 6),
-    (-120.263, 211.858, 0, 6), (-290.01, 240.968, 0, 6), (-337.65, 46.14, 0, 6), (-121.98, -14.45, 0, 6)
-]
+rn = RoadNodes().get('test')
 road = Road(material='a_asphalt_01_a', rid='road', looped=True)
-road.nodes.extend(nodes)
+road.nodes.extend(rn['nodes'])
 scenario.add_road(road)
 
 vehicle = Vehicle('ego_vehicle', model='etk800', licence='PYTHON')
@@ -51,7 +47,7 @@ front_camera = Camera(pos=(0, 1.3, 1.8), direction=(0, 1, -0.3), fov=90, resolut
 vehicle.attach_sensor("front_camera", front_camera)
 
 # Add it to our scenario at this position and rotation
-scenario.add_vehicle(vehicle, pos=(-43.21, 43.48, 0), rot=(0, 0, -135))
+scenario.add_vehicle(vehicle, pos=rn['pos'], rot=rn['rot'])
 # Place files defining our scenario for the simulator to read
 scenario.make(bng)
 

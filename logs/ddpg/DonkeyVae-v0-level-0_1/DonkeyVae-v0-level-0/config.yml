@@ -18,7 +18,7 @@
   - - policy
     - CustomDDPGPolicy
   - - vae_path
-    - C:\Users\Tim\Desktop\logs\vae-64.pkl
+    - C:\Users\Tim\PycharmProjects\reinforcement-learning\logs\vae-64.pkl
   - - z_size
     - 64
   - - MIN_THROTTLE
