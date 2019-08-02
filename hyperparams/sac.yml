@@ -1,4 +1,4 @@
-DonkeyVae-v0:
+BeamNG:
   # normalize: "{'norm_obs': True, 'norm_reward': False}"
   n_timesteps: !!float 5000
   # policy: 'TinySACPolicy'

@@ -1,0 +1,578 @@
+<xs:schema xmlns="http://drivebuild.com" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           targetNamespace="http://drivebuild.com">
+    <xs:element name="environment">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="author" type="xs:string"/>
+                <xs:element name="timeOfDay" minOccurs="0">
+                    <xs:simpleType>
+                        <xs:restriction base="nonNegativeDecimal">
+                            <xs:minInclusive value="0"/>
+                            <xs:maxInclusive value="1"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="lanes" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="lane" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="laneSegment" minOccurs="2" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:attributeGroup ref="positionAttributes"/>
+                                                <xs:attribute name="width" type="positiveDecimal" use="required"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="id" type="xs:ID"/>
+                                    <!--  FIXME Exclude offroad as ID  -->
+                                    <xs:attribute name="markings" type="xs:boolean" default="false"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="obstacles" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="obstacle" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="criteria">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="author" type="xs:string"/>
+                <xs:element name="version" type="positiveDecimal"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="environment" type="xs:string"/>
+                <xs:element name="stepsPerSecond" type="xs:positiveInteger"/>
+                <xs:element name="aiFrequency" type="xs:positiveInteger"/>
+                <xs:element name="participants">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="participant" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="initialState">
+                                            <xs:complexType>
+                                                <xs:attributeGroup ref="movementGroup"/>
+                                                <xs:attribute name="orientation" use="required">
+                                                    <xs:simpleType>
+                                                        <xs:restriction base="xs:decimal">
+                                                            <xs:minInclusive value="0"/>
+                                                            <xs:maxExclusive value="360"/>
+                                                            <xs:fractionDigits value="2"/>
+                                                        </xs:restriction>
+                                                    </xs:simpleType>
+                                                </xs:attribute>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="ai" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element ref="aiData" maxOccurs="unbounded"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="movement" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="waypoint" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:attributeGroup ref="movementGroup"/>
+                                                            <xs:attribute name="tolerance" type="positiveDecimal"
+                                                                          use="required"/>
+                                                            <xs:attribute name="id" type="xs:ID"/>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                    <xs:attribute name="id" type="xs:ID" use="required"/>
+                                    <!--  FIXME Disallow "any"  -->
+                                    <xs:attribute name="model" use="required">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="ETK800"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="precondition" type="criterion" minOccurs="0"/>
+                <xs:element name="success" type="criterion" minOccurs="0"/>
+                <xs:element name="failure" type="criterion" minOccurs="0"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <!--  Obstacle types  -->
+    <xs:complexType name="obstacle">
+        <xs:attributeGroup ref="positionAttributes"/>
+        <xs:attribute name="xRot" type="nonNegativeDecimal" default="0"/>
+        <xs:attribute name="yRot" type="nonNegativeDecimal" default="0"/>
+        <xs:attribute name="zRot" type="nonNegativeDecimal" default="0"/>
+        <xs:attribute name="height" type="positiveDecimal" use="required"/>
+        <xs:attribute name="id" type="xs:ID"/>
+    </xs:complexType>
+    <xs:element name="obstacle" type="obstacle" abstract="true"/>
+    <xs:element name="cube" substitutionGroup="obstacle">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="obstacle">
+                    <xs:attribute name="width" type="positiveDecimal" use="required"/>
+                    <xs:attribute name="length" type="positiveDecimal" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="cylinder" substitutionGroup="obstacle">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="obstacle">
+                    <xs:attribute name="radius" type="positiveDecimal" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="cone" substitutionGroup="obstacle">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="obstacle">
+                    <xs:attribute name="baseRadius" type="positiveDecimal" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="bump" substitutionGroup="obstacle">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="obstacle">
+                    <xs:attribute name="width" type="positiveDecimal" use="required"/>
+                    <xs:attribute name="length" type="positiveDecimal" use="required"/>
+                    <xs:attribute name="upperLength" type="positiveDecimal" use="required"/>
+                    <!--  FIXME Negative heights?  -->
+                    <xs:attribute name="upperWidth" type="positiveDecimal" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  Request data/sensors  -->
+    <xs:complexType name="aiData">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+    </xs:complexType>
+    <xs:element name="aiData" abstract="true" type="aiData"/>
+    <xs:element name="position" substitutionGroup="aiData">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="aiData"></xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="damage" substitutionGroup="aiData">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="aiData"></xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="steeringAngle" substitutionGroup="aiData">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="aiData"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="speed" substitutionGroup="aiData">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="aiData"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="lidar" substitutionGroup="aiData">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="aiData">
+                    <xs:attribute name="radius" type="positiveDecimal" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="camera" substitutionGroup="aiData">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="aiData">
+                    <xs:attribute name="width" type="xs:positiveInteger" use="required"/>
+                    <xs:attribute name="height" type="xs:positiveInteger" use="required"/>
+                    <xs:attribute name="fov" type="xs:positiveInteger" use="required"/>
+                    <!--  FIXME Add resolution?  -->
+                    <xs:attribute name="direction" use="required">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="FRONT"/>
+                                <xs:enumeration value="RIGHT"/>
+                                <xs:enumeration value="BACK"/>
+                                <xs:enumeration value="LEFT"/>
+                                <xs:enumeration value="DASH"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="light" substitutionGroup="aiData">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="aiData"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="laneCenterDistance" substitutionGroup="aiData">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="aiData"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="carToLaneAngle" substitutionGroup="aiData">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="aiData"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  Basic dbtypes  -->
+    <xs:attributeGroup name="positionAttributes">
+        <xs:attribute name="x" type="xs:decimal" use="required"/>
+        <xs:attribute name="y" type="xs:decimal" use="required"/>
+    </xs:attributeGroup>
+    <xs:simpleType name="positiveDecimal">
+        <xs:restriction base="xs:decimal">
+            <xs:minExclusive value="0"/>
+            <xs:fractionDigits value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="nonNegativeDecimal">
+        <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="0"/>
+            <xs:fractionDigits value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!--  Types for participants  -->
+    <xs:simpleType name="movementMode">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="MANUAL"/>
+            <xs:enumeration value="AUTONOMOUS"/>
+            <xs:enumeration value="TRAINING"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:attributeGroup name="movementGroup">
+        <xs:attributeGroup ref="positionAttributes"/>
+        <xs:attribute name="movementMode" type="movementMode" use="required"/>
+        <xs:attribute name="speed" type="xs:nonNegativeInteger"/>
+        <xs:attribute name="speedLimit" type="xs:nonNegativeInteger"/>
+    </xs:attributeGroup>
+    <!--  Connective dbtypes  -->
+    <xs:complexType name="binaryOp">
+        <xs:sequence>
+            <xs:element ref="criterion" minOccurs="2" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="connective" abstract="true"/>
+    <xs:element name="and" substitutionGroup="connective" type="binaryOp"/>
+    <xs:element name="or" substitutionGroup="connective" type="binaryOp"/>
+    <xs:element name="not" substitutionGroup="connective">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="criterion"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <!--  Criterion dbtypes  -->
+    <xs:complexType name="stateCondition">
+        <xs:attribute name="participant" use="required">
+            <xs:simpleType>
+                <xs:union>
+                    <xs:simpleType>
+                        <xs:list itemType="xs:IDREF"/>
+                    </xs:simpleType>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="any"/>
+                            <!--
+                            Allow "inherit"? => A car that fulfills a certain criterion has to fulfill another
+                           -->
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:union>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="validationConstraint">
+        <xs:complexContent>
+            <xs:extension base="criterion">
+                <xs:sequence>
+                    <xs:element ref="criterion"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="criterion" abstract="true"/>
+    <xs:element name="stateCondition" substitutionGroup="criterion" type="stateCondition" abstract="true"/>
+    <xs:element name="validationConstraint" substitutionGroup="criterion" type="validationConstraint" abstract="true"/>
+    <xs:complexType name="criterion">
+        <xs:choice>
+            <xs:element ref="connective"/>
+            <xs:element ref="stateCondition"/>
+            <xs:element ref="validationConstraint"/>
+        </xs:choice>
+    </xs:complexType>
+    <!--  Position criterion  -->
+    <xs:attributeGroup name="position">
+        <xs:attribute name="x" type="xs:decimal" use="required"/>
+        <xs:attribute name="y" type="xs:decimal" use="required"/>
+        <xs:attribute name="tolerance" type="positiveDecimal" use="required"/>
+    </xs:attributeGroup>
+    <xs:element name="scPosition" substitutionGroup="stateCondition">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="stateCondition">
+                    <xs:attributeGroup ref="position"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="vcPosition" substitutionGroup="validationConstraint">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="validationConstraint">
+                    <xs:attributeGroup ref="position"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  Area criterion  -->
+    <xs:attributeGroup name="area">
+        <xs:attribute name="points" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="\(-?\d+,-?\d+\)(;\(-?\d+,-?\d+\)){2,}"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:attributeGroup>
+    <xs:element name="scArea" substitutionGroup="stateCondition">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="stateCondition">
+                    <xs:attributeGroup ref="area"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="vcArea" substitutionGroup="validationConstraint">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="validationConstraint">
+                    <xs:attributeGroup ref="area"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  Lane criterion  -->
+    <xs:attributeGroup name="lane">
+        <xs:attribute name="onLane" use="required" type="xs:string"/>
+    </xs:attributeGroup>
+    <xs:element name="scLane" substitutionGroup="stateCondition">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="stateCondition">
+                    <xs:attributeGroup ref="lane"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="vcLane" substitutionGroup="validationConstraint">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="validationConstraint">
+                    <xs:attributeGroup ref="lane"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  Speed criterion  -->
+    <xs:attributeGroup name="speed">
+        <xs:attribute name="limit" type="xs:nonNegativeInteger" use="required"/>
+    </xs:attributeGroup>
+    <xs:element name="scSpeed" substitutionGroup="stateCondition">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="stateCondition">
+                    <xs:attributeGroup ref="speed"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="vcSpeed" substitutionGroup="validationConstraint">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="validationConstraint">
+                    <xs:attributeGroup ref="speed"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  Damage criterion  -->
+    <!--
+    NOTE Currently it is only supported to detect whether a car has been damaged
+   -->
+    <xs:element name="scDamage" substitutionGroup="stateCondition">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="stateCondition"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="vcDamage" substitutionGroup="validationConstraint">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="validationConstraint"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  Time criterion  -->
+    <xs:attributeGroup name="time">
+        <xs:attribute name="from" type="xs:nonNegativeInteger" use="required"/>
+        <xs:attribute name="to" type="xs:nonNegativeInteger" use="required"/>
+        <!--  <xs:assert test="@from le @to"/>  -->
+        <!--  FIXME Introduce assert  -->
+    </xs:attributeGroup>
+    <xs:element name="time" substitutionGroup="validationConstraint">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="validationConstraint">
+                    <xs:attributeGroup ref="time"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  Distance criterion  -->
+    <xs:attributeGroup name="distance">
+        <xs:attribute name="to" type="xs:IDREF" use="required"/>
+        <xs:attribute name="max" type="positiveDecimal" use="required"/>
+    </xs:attributeGroup>
+    <xs:element name="scDistance" substitutionGroup="stateCondition">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="stateCondition">
+                    <xs:attributeGroup ref="distance"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="vcDistance" substitutionGroup="validationConstraint">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="validationConstraint">
+                    <xs:attributeGroup ref="distance"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  TTC criterion  -->
+    <xs:attributeGroup name="ttc">
+        <!--  FIXME participant missing?  -->
+        <xs:attribute name="to" type="xs:IDREF" use="required"/>
+        <xs:attribute name="max" type="positiveDecimal" use="required"/>
+    </xs:attributeGroup>
+    <xs:element name="vcTTC" substitutionGroup="validationConstraint">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="validationConstraint">
+                    <xs:attributeGroup ref="ttc"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  Light criterion  -->
+    <xs:attributeGroup name="light">
+        <xs:attribute name="turnedOn" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <!--  NOTE Lights were found in:  -->
+                    <!--
+                    Dash lights: [...]/trunk/lua/vehicle/extensions/outgauge.lua
+                   -->
+                    <!--  [...]/trunk/lua/vehicle/electrics.lua  -->
+                    <!--  Dash/show lights  -->
+                    <xs:enumeration value="LOW_BEAM"/>
+                    <!--  (lightsState == 1)  -->
+                    <xs:enumeration value="HIGH_BEAM"/>
+                    <!--  (lightsState == 2)  -->
+                    <xs:enumeration value="SIGNAL_L"/>
+                    <xs:enumeration value="SIGNAL_R"/>
+                    <xs:enumeration value="SIGNAL_WARN"/>
+                    <xs:enumeration value="FOG_LIGHTS"/>
+                    <!--  TODO Do the following exist in BeamNG?  -->
+                    <!--
+                   <xs:enumeration value="backupLight"/>
+                                       <xs:enumeration value="rearFogLamp"/>
+                                       <xs:enumeration value="frontFogLamp"/>
+                   -->
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:attributeGroup>
+    <xs:element name="scLight">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="stateCondition">
+                    <xs:attributeGroup ref="light"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="vcLight">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="validationConstraint">
+                    <xs:attributeGroup ref="light"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--  Waypoint criterion  -->
+    <xs:attributeGroup name="waypoint">
+        <xs:attribute name="waypoint" type="xs:IDREF"/>
+    </xs:attributeGroup>
+    <xs:element name="scWaypoint" substitutionGroup="stateCondition">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="stateCondition">
+                    <xs:attributeGroup ref="waypoint"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="vcWaypoint" substitutionGroup="validationConstraint">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="validationConstraint">
+                    <xs:attributeGroup ref="waypoint"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -1,4 +1,4 @@
-DonkeyVae-v0:
+BeamNG:
   n_timesteps: !!float 5000
   policy: 'CustomDDPGPolicy'
   noise_type: 'ornstein-uhlenbeck'

@@ -8,7 +8,7 @@ import numpy as np
 from gym import spaces
 from gym.utils import seeding
 
-from config import INPUT_DIM, MIN_STEERING, MAX_STEERING, JERK_REWARD_WEIGHT, MAX_STEERING_DIFF
+from config import INPUT_DIM, MIN_STEERING, MAX_STEERING, MAX_STEERING_DIFF
 from donkey_gym.core.donkey_proc import DonkeyUnityProcess
 from .donkey_sim import DonkeyUnitySimContoller
 

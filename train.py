@@ -211,6 +211,7 @@ model.save(os.path.join(save_path, ENV_ID))
 with open(os.path.join(params_path, 'config.yml'), 'w') as f:
     yaml.dump(saved_hyperparams, f)
 
+print("Saved model!")
 if args.save_vae and vae is not None:
     print("Saving VAE")
     vae.save(os.path.join(params_path, 'vae'))
