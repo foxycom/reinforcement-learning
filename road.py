@@ -6,8 +6,8 @@ import numpy as np
 from beamngpy import BeamNGpy, Scenario, Vehicle, Road, ProceduralCone, ProceduralCube
 from beamngpy.sensors import Camera
 
-from donkey_gym.envs.beamng_sim import TrainingRoad, ASFAULT_PREFAB, RoadPoint, update_prefab
-from donkey_gym.envs.roadnodes import RoadNodes
+from training_gym.envs.beamng_sim import TrainingRoad, ASFAULT_PREFAB, RoadPoint, update_prefab
+from training_gym.envs.roadnodes import RoadNodes
 
 CAMERA_HEIGHT = 120
 CAMERA_WIDTH = 160

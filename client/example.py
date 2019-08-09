@@ -2,7 +2,7 @@ import os
 from threading import Thread
 from typing import List
 
-from client.aiExchangeMessages_pb2 import SimulationID
+from client.aiExchangeMessages_pb2 import SimulationID, TestResult
 
 
 def _handle_vehicle(sid: SimulationID, vid: str, requests: List[str]) -> None:
@@ -10,7 +10,7 @@ def _handle_vehicle(sid: SimulationID, vid: str, requests: List[str]) -> None:
     vid_obj.vid = vid
 
     i = 0
-    while i < 10:
+    while i < 3:
         i += 1
         print(sid.sid + ": Test status: " + service.get_status(sid))
         print(vid + ": Wait")
@@ -20,49 +20,27 @@ def _handle_vehicle(sid: SimulationID, vid: str, requests: List[str]) -> None:
             request = DataRequest()
             request.request_ids.extend(requests)
             data = service.request_data(sid, vid_obj, request)  # request()
-            print(data)
+            print(data.data['egoFrontCamera'])
             print(vid + ": Wait for control")
             control = Control()
-            while not is_pressed("space"):  # Wait for the user to trigger manual drive
-                pass
-            print(vid + ": Control")
-            if is_pressed("s"):
-                control.simCommand.command = Control.SimCommand.Command.SUCCEED
-            elif is_pressed("f"):
-                control.simCommand.command = Control.SimCommand.Command.FAIL
-            elif is_pressed("c"):
-                control.simCommand.command = Control.SimCommand.Command.CANCEL
-            else:
-                accelerate = 0
-                steer = 0
-                brake = 0
-                if is_pressed("up"):
-                    accelerate = 1
-                if is_pressed("down"):
-                    brake = 1
-                if is_pressed("right"):
-                    steer = steer + 1
-                if is_pressed("left"):
-                    steer = steer - 1
-                control.avCommand.accelerate = accelerate
-                control.avCommand.steer = steer
-                control.avCommand.brake = brake
-            service.control(sid, vid_obj, control)  # control()
+            control.avCommand.accelerate = 1
+            service.control(sid, vid_obj, control)
         else:
             print(sid.sid + ": The simulation is not running anymore (State: "
                   + SimStateResponse.SimState.Name(sim_state) + ").")
             print(sid.sid + ": Final result: " + service.get_result(sid))
             break
 
-    control = Control()
-    control.simCommand.command = Control.SimCommand.Command.FAIL
-    service.control(sid, vid_obj, control)
+    sim_state = service.wait_for_simulator_request(sid, vid_obj)  # wait()
+    if sim_state is SimStateResponse.SimState.RUNNING:
+        result = TestResult()
+        result.result = TestResult.Result.FAILED
+        service.control_sim(sid, result)
 
 
 if __name__ == "__main__":
     from client.AIExchangeService import get_service
     from client.aiExchangeMessages_pb2 import SimStateResponse, Control, SimulationID, VehicleID, DataRequest
-    from keyboard import is_pressed
 
     service = get_service()
 
@@ -74,14 +52,18 @@ if __name__ == "__main__":
         exit(1)
 
     # Send tests
-    sids = service.run_tests(username, password, "envs/criteriaA.dbc.xml", "envs/environmentA.dbe.xml")
+    sids = service.run_tests(username, password, "xmls/criteriaA.dbc.xml", "xmls/environmentA.dbe.xml")
+    # -> Response status: 500
+
+    print("Tests sent")
 
     # Interact with a simulation
     if not sids:
         exit(1)
+
     sid = SimulationID()
     sid.sid = sids.sids[0]
-    ego_requests = ["egoSpeed"]
+    ego_requests = ["egoSpeed", "egoFrontCamera"]
     ego_vehicle = Thread(target=_handle_vehicle, args=(sid, "ego", ego_requests))
     ego_vehicle.start()
     ego_vehicle.join()

@@ -1,6 +1,12 @@
 import os
 from client.aiExchangeMessages_pb2 import SimulationID, VehicleID
+from training_gym.envs.drivebuild_vae import DriveBuildEnv
 from algos import DDPG
+from gym import spaces
+import numpy as np
+
+from utils.utils import load_vae
+from config import MIN_THROTTLE, MAX_THROTTLE, N_COMMAND_HISTORY, FRAME_SKIP
 
 MODEL_PATH = os.path.join(os.getcwd(), "models/agent.pkl")
 VAE_PATH = os.path.join(os.getcwd(), "models/vae.pkl")
@@ -9,47 +15,47 @@ VAE_PATH = os.path.join(os.getcwd(), "models/vae.pkl")
 class DDPGAI(object):
 
     def __init__(self):
+        vae = load_vae(VAE_PATH)
+        assert vae is not None
+
+        self.env = DriveBuildEnv(vae=vae, frame_skip=FRAME_SKIP, max_throttle=MAX_THROTTLE, min_throttle=MIN_THROTTLE,
+                                 n_command_history=N_COMMAND_HISTORY)
         self.model = DDPG.load(MODEL_PATH)
 
     def start(self, sid: SimulationID, vid: VehicleID) -> None:
-        from client.AIExchangeService import get_service
-        from client.aiExchangeMessages_pb2 import SimStateResponse, DataRequest, Control
-        service = get_service()
+        from client.aiExchangeMessages_pb2 import SimStateResponse
+
+        self.env.sid = sid
+        self.env.vid = vid
+
         i = 0
         while i < 10:
             i += 1
-            print(sid.sid + ": Test status: " + service.get_status(sid))
+
+            print(sid.sid + ": Test status: " + self.env.status())
             # Wait for the simulation to request this AI
-            sim_state = service.wait_for_simulator_request(sid, vid)
-            if sim_state is SimStateResponse.SimState.RUNNING:  # Check whether simulation is still running
+            state = self.env.wait()
+            if state is SimStateResponse.SimState.RUNNING:  # Check whether simulation is still running
                 # Request data this AI needs
-                request = DataRequest()
-                request.request_ids.extend(["egoFrontCamera", "egoLaneDist"])  # Add all IDs of data to be requested
-                data = service.request_data(sid, vid, request)  # Request the actual data
-                print(data)
-                # Calculate commands controlling the car
-                control = Control()
-                # Define a control command like
-                # control.avCommand.accelerate = <Some value between 0.0 and 1.0>
-                # control.avCommand.steer = <Some value between -1.0 (left) and 1.0 (right)
-                # control.avCommand.brake = <Some value between 0.0 and 1.0>
-                service.control(sid, vid, control)
+                obs = self.env.observe(["egoFrontCamera", "egoLaneDist"])
+                action, _ = self.model.predict(obs, deterministic=True)
+                if isinstance(self.env.action_space, spaces.Box):
+                    action = np.clip(action, self.env.action_space.low, self.env.action_space.high)
+
+                self.env.step(action)
             else:
-                print(sid.sid + ": The simulation is not running anymore (Final state: "
-                      + SimStateResponse.SimState.Name(sim_state) + ").")
-                print(sid.sid + ": Final test result: " + service.get_result(sid))
+                print(sid.sid + ": The simulation is not running anymore (Final state: %%).")
+                print(sid.sid + ": Final test result: " + self.env.result())
                 # Clean up everything you have to
                 break
 
-        control = Control()
-        control.simCommand.command = Control.SimCommand.Command.FAIL
-        service.control(sid, vid, control)
+        self.env.finish_sim()
 
 
 if __name__ == "__main__":
     ai = DDPGAI()
     sid = SimulationID()
-    sid.sid = "snid_1_sim_4445"
+    sid.sid = "snid_0_sim_2636"
     vid = VehicleID()
     vid.vid = "ego"
     ai.start(sid, vid)

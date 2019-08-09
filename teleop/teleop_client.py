@@ -14,7 +14,7 @@ from stable_baselines.common.vec_env import VecFrameStack, VecNormalize, DummyVe
 from config import MIN_STEERING, MAX_STEERING, MIN_THROTTLE, MAX_THROTTLE, \
     LEVEL, N_COMMAND_HISTORY, TEST_FRAME_SKIP, ENV_ID, FRAME_SKIP, \
     SHOW_IMAGES_TELEOP, REWARD_CRASH, CRASH_SPEED_WEIGHT
-from donkey_gym.envs.vae_env import DonkeyVAEEnv
+from training_gym.envs.vae_env import DonkeyVAEEnv
 from utils.utils import ALGOS, get_latest_run_id, load_vae
 from .recorder import Recorder
 

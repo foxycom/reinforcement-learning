@@ -3,7 +3,7 @@ from beamngpy.sensors import Camera
 from config import CAMERA_HEIGHT, CAMERA_WIDTH, FOV
 import numpy as np
 import cv2
-from donkey_gym.envs.beamng_sim import TrainingRoad, ASFAULT_PREFAB, update_prefab, RoadPoint
+from training_gym.envs.beamng_sim import TrainingRoad, ASFAULT_PREFAB, update_prefab, RoadPoint
 
 road = TrainingRoad(ASFAULT_PREFAB)
 road.calculate_road_line(back=True)
