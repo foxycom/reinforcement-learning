@@ -8,14 +8,14 @@
     <!--
     Defines in how many steps the simulation divides each second
    -->
-    <aiFrequency>50</aiFrequency>
+    <aiFrequency>10</aiFrequency>
     <!--
     Defines how many steps to simulate before requesting AIs and cars in TRAINING mode
    -->
     <participants>
         <participant id="ego" model="ETK800">
             <!--  Definition of a participant  -->
-            <initialState x="-1049.9751799828496" y="-13.959792299076733" movementMode="TRAINING" orientation="270"/>
+            <initialState x="-1049.9751799828496" y="-13.959792299076733" movementMode="TRAINING" orientation="0"/>
             <!--
             Initial position, orientation and movement mode of the participant
            -->

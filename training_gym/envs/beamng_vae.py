@@ -10,6 +10,8 @@ from gym.utils import seeding
 from config import INPUT_DIM, MIN_STEERING, MAX_STEERING, MAX_STEERING_DIFF, JERK_REWARD_WEIGHT
 from .beamng_sim import Simulation
 
+#from client.aiExchangeMessages_pb2 import SimStateResponse
+
 
 class BeamNGenv(gym.Env):
     """
@@ -35,7 +37,7 @@ class BeamNGenv(gym.Env):
     def __init__(self, level=0, frame_skip=2, vae=None, const_throttle=None,
                  min_throttle=0.2, max_throttle=0.5,
                  max_cte_error=3.0, n_command_history=0,
-                 n_stack=1):
+                 n_stack=1, simulation=None):
         self.vae = vae
         self.z_size = None
         if vae is not None:
@@ -55,7 +57,10 @@ class BeamNGenv(gym.Env):
         self.stacked_obs = None
 
         self.unity_process = None
-        self.viewer = Simulation()
+        if simulation is None:
+            self.viewer = Simulation()
+        else:
+            self.viewer = simulation
 
         # start simulation com
 
@@ -233,3 +238,15 @@ class BeamNGenv(gym.Env):
         :param vae: (VAEController object)
         """
         self.vae = vae
+
+    def status(self):
+        return "OK"
+
+    def wait(self):
+        self.viewer.wait()
+
+    def set_sid(self, sid):
+        self.viewer.sid = sid
+
+    def set_vid(self, vid):
+        self.viewer.vid = vid

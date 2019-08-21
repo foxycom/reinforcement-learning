@@ -9,7 +9,7 @@ road = TrainingRoad(ASFAULT_PREFAB)
 road.calculate_road_line(back=True)
 
 bng = BeamNGpy('localhost', 64256, home='C:\\Users\\Tim\\Documents\\BeamNG.research')
-scenario = Scenario('train', 'train')
+scenario = Scenario('smallgrid', 'train')
 scenario.add_road(road.asphalt)
 scenario.add_road(road.mid_line)
 scenario.add_road(road.left_line)
@@ -17,7 +17,7 @@ scenario.add_road(road.right_line)
 
 
 vehicle = Vehicle('ego_vehicle', model='etk800', licence='PYTHON')
-front_camera = Camera(pos=(-0.2, 1.4, 1.6), direction=(0, 1, -0.35), fov=FOV, resolution=(CAMERA_WIDTH, CAMERA_HEIGHT),
+front_camera = Camera(pos=(0, 1.4, 1.8), direction=(0, 1, -0.23), fov=FOV, resolution=(CAMERA_WIDTH, CAMERA_HEIGHT),
                                    colour=True, depth=False, annotation=False)
 vehicle.attach_sensor("front_camera", front_camera)
 
@@ -38,10 +38,10 @@ bng.set_steps_per_second(60)
 bng.load_scenario(scenario)
 
 bng.start_scenario()
-#vehicle.ai_set_mode('span')
-#vehicle.ai_set_speed(5)
-#vehicle.ai_set_line([{'pos': node.pos(), 'speed': 10} for node in road.road_line])
-number_of_images = 2778
+vehicle.ai_set_mode('span')
+vehicle.ai_set_speed(5)
+vehicle.ai_set_line([{'pos': node.pos(), 'speed': 10} for node in road.road_line])
+number_of_images = 0
 while number_of_images < 9000:
     number_of_images += 1
     print(number_of_images)

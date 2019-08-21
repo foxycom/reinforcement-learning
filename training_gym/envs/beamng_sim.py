@@ -197,7 +197,6 @@ class TrainingRoad(object):
         for l_node, r_node in zip(self.mid_line_nodes, self.right_nodes):
             pos, dir = self.calculate_waypoint(l_node.pos(), r_node.pos())
             road_line.append(RoadPoint(pos, dir=dir))
-           # print("Left: {} | Right: {} | Waypoint: {}".format(l_node.pos(), r_node.pos(), pos))
 
         if back:
             back_line = list()
@@ -294,7 +293,6 @@ class Simulation(object):
                               colour=True, depth=False, annotation=False)
         self.vehicle.attach_sensor("front_camera", front_camera)
 
-        print(spawn_point.pos())
         self.scenario.add_vehicle(self.vehicle, pos=spawn_point.pos(), rot=spawn_point.rot())
 
         self.scenario.make(self.bng)
@@ -389,3 +387,8 @@ class Simulation(object):
         #closest_point = self.road.random_waypoint()
         self.bng.teleport_vehicle(vehicle=self.vehicle, pos=closest_point.pos(), rot=closest_point.rot())
         self.bng.pause()
+
+    # TODO delete
+    def wait(self):
+        from client.aiExchangeMessages_pb2 import SimStateResponse
+        return SimStateResponse.SimState.RUNNING

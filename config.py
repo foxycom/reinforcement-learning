@@ -25,7 +25,7 @@ INPUT_DIM = (IMAGE_HEIGHT, IMAGE_WIDTH, N_CHANNELS)
 THROTTLE_REWARD_WEIGHT = 0.05
 
 # Max distance to the center of the lane
-MAX_DIST = 1.3
+MAX_DIST = 1#1.3
 
 # Desired velocity in km/h
 TARGET_VELOCITY = 50

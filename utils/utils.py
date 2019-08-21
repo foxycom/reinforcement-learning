@@ -96,7 +96,7 @@ def load_vae(path=None, z_size=None):
 
 
 def make_env(seed=0, log_dir=None, vae=None, frame_skip=None,
-             teleop=False, n_stack=1):
+             teleop=False, n_stack=1, simulation=None):
     """
     Helper function to multiprocess training
     and log the progress.
@@ -118,7 +118,7 @@ def make_env(seed=0, log_dir=None, vae=None, frame_skip=None,
         set_global_seeds(seed)
         env = BeamNGenv(level=LEVEL, frame_skip=frame_skip, vae=vae, const_throttle=None, min_throttle=MIN_THROTTLE,
                            max_throttle=MAX_THROTTLE, max_cte_error=MAX_CTE_ERROR, n_command_history=N_COMMAND_HISTORY,
-                           n_stack=n_stack)
+                           n_stack=n_stack, simulation=simulation)
         env.seed(seed)
         if not teleop:
             env = Monitor(env, log_dir, allow_early_resets=True)
@@ -128,7 +128,7 @@ def make_env(seed=0, log_dir=None, vae=None, frame_skip=None,
 
 
 def create_test_env(stats_path=None, seed=0,
-                    log_dir='', hyperparams=None):
+                    log_dir='', hyperparams=None, simulation=None):
     """
     Create environment for testing a trained agent
 
@@ -153,7 +153,7 @@ def create_test_env(stats_path=None, seed=0,
         vae = load_vae(vae_path)
 
     env = DummyVecEnv([make_env(seed, log_dir, vae=vae,
-                                frame_skip=TEST_FRAME_SKIP)])
+                                frame_skip=TEST_FRAME_SKIP, simulation=simulation)])
 
     # Load saved stats for normalizing input and rewards
     # And optionally stack frames
