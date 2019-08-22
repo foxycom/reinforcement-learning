@@ -1,6 +1,6 @@
 from training_gym.level import Level
 
-LEVEL_NAME = Level.GRAS
+LEVEL_NAME = Level.GRASS
 
 # Steps per second
 SPS = 100

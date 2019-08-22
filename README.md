@@ -5,7 +5,7 @@ This is a version of [araffin's](https://github.com/araffin) reinforcement learn
 
 
 ## Using trained AI with DriveBuild
-0. Import the ```DDPGAI``` class from ai.py in the root directory
+0. Import the ```DDPGAI``` class from ```ai.py``` in the root directory
 1. Instantiate an object and execute the ```.start(sid, vid)``` method
 
 ```
@@ -30,22 +30,22 @@ There are two pretrained variational encoders and models which were trained on r
 However, different environments were used:
 
 1. Pure smallgrid level (the world does not contain anything but the road)
-2. Smallgrid level filled with gras
+2. Smallgrid level filled with grass
 
 For both environments the same road materials were used:
 0. Asphalt: ```a_asphalt_01_a```
 1. Mid line marking: ```line_yellow```
 2. Left and right line markings: ```line_white```
 
-Pure smallgrid        | Smallgrid filled with gras
+Pure smallgrid        | Smallgrid filled with grass
 :-------------------------:|:-------------------------:
-![result](content/pure_mode.gif)  | ![result](content/gras_mode.gif)
-```LEVEL_NAME = Level.PURE``` | ```LEVEL_NAME = Level.GRAS``` 
+![result](content/pure_mode.gif)  | ![result](content/grass_mode.gif)
+```LEVEL_NAME = Level.PURE``` | ```LEVEL_NAME = Level.GRASS``` 
 
-By default a VAE and an agent trained on in gras mode are used.
-In ```config.py``` it is defined as ```LEVEL_NAME = Level.GRAS```.
+By default a VAE and an agent trained on in grass mode are used.
+In ```config.py``` it is defined as ```LEVEL_NAME = Level.GRASS```.
 Change it to ```LEVEL_NAME = Level.PURE``` in order to use the VAE and the agent which were trained in the pure smallgrid environment. 
-Make sure to use the correct mode, otherwise you may encounter some weird behavior. **(Note: the agent which was trained in the pure smallgrid environment performs much worse than the ones trained in the gras environment)**
+Make sure to use the correct mode, otherwise you may encounter some weird behavior. **(Note: the agent which was trained in the pure smallgrid environment performs much worse than the ones trained in the grass environment)**
 
 ### Camera properties
 During the training the front camera was used with these properties:
