@@ -31,7 +31,7 @@ THROTTLE_REWARD_WEIGHT = 0.1
 MID_DIST_PENALTY_WEIGHT = 0.7
 
 # Max distance to the center of the lane
-MAX_DIST = 0.9
+MAX_DIST = 1.1
 MAX_VELOCITY = 40
 # Desired velocity in km/h
 TARGET_VELOCITY = 50
@@ -41,7 +41,7 @@ JERK_REWARD_WEIGHT = 0.0
 
 # very smooth control: 10% -> 0.2 diff in steering allowed (requires more training)
 # smooth control: 15% -> 0.3 diff in steering allowed
-MAX_STEERING_DIFF = 0.1
+MAX_STEERING_DIFF = 0.15
 
 REWARD_STEP = 1
 
@@ -58,9 +58,9 @@ MIN_STEERING = - MAX_STEERING
 CHECKPOINTS = False
 
 # Simulation config
-MIN_THROTTLE = 0.1
+MIN_THROTTLE = 0.08
 # max_throttle: 0.6 for level 0 and 0.5 for level 1
-MAX_THROTTLE = 0.15 #0.45
+MAX_THROTTLE = 0.2 #0.45
 # Number of past commands to concatenate with the input
 N_COMMAND_HISTORY = 20 #20
 # Max cross track error (used in normal mode to reset the car)

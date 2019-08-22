@@ -18,11 +18,11 @@
   - - policy
     - CustomDDPGPolicy
   - - vae_path
-    - C:\Users\Tim\PycharmProjects\reinforcement-learning\logs\smallgrid-lines.pkl
+    - C:\Users\Tim\PycharmProjects\reinforcement-learning\models\evolve-vae.pkl
   - - z_size
     - 64
   - - MIN_THROTTLE
-    - 0.05
+    - 0.08
   - - MAX_THROTTLE
     - 0.2
   - - FRAME_SKIP
@@ -32,4 +32,4 @@
   - - N_COMMAND_HISTORY
     - 20
   - - MAX_STEERING_DIFF
-    - 0.1
+    - 0.15
