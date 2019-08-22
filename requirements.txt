@@ -1,4 +1,4 @@
-#shapely
+shapely
 beamngpy
 PyYAML
 mpi4py
