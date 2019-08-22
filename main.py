@@ -1,5 +1,7 @@
-from ai import DDPGAI
 import os
+
+from ai import DDPGAI
+
 from client.AIExchangeService import get_service
 from client.aiExchangeMessages_pb2 import SimStateResponse, Control, SimulationID, VehicleID, DataRequest
 

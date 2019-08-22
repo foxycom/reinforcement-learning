@@ -1,17 +1,17 @@
 import sys
 import csv
-from enum import Enum
-
 import re
-from beamngpy import BeamNGpy, Scenario, Vehicle, Road
-from beamngpy.sensors import Camera
 import numpy as np
+
+from enum import Enum
+from beamngpy import BeamNGpy, Scenario, Vehicle, Road
 from threading import Thread
 
 from config import THROTTLE_REWARD_WEIGHT, CRASH_SPEED_WEIGHT, REWARD_CRASH, \
     BEAMNG_HOME, ROI, CAMERA_WIDTH, CAMERA_HEIGHT, SPS, STEPS_INTERVAL, FOV, \
-    REWARD_STEP, MAX_DIST, MAX_VELOCITY, MID_DIST_PENALTY_WEIGHT
+    REWARD_STEP, MAX_DIST, MID_DIST_PENALTY_WEIGHT
 from shapely.geometry import Point, LineString
+from beamngpy.sensors import Camera
 from .roadnodes import RoadNodes
 
 

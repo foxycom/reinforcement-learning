@@ -1,10 +1,12 @@
-from beamngpy import BeamNGpy, Scenario, Vehicle, Road
-from beamngpy.sensors import Camera
-from config import CAMERA_HEIGHT, CAMERA_WIDTH, FOV
 import numpy as np
 import os
 import cv2
-from training_gym.envs.beamng_sim import TrainingRoad, ASFAULT_PREFAB, update_prefab, RoadPoint
+
+from beamngpy import BeamNGpy, Scenario, Vehicle
+from config import CAMERA_HEIGHT, CAMERA_WIDTH, FOV
+
+from beamngpy.sensors import Camera
+from training_gym.envs.beamng_sim import TrainingRoad, ASFAULT_PREFAB, update_prefab
 
 
 def main():

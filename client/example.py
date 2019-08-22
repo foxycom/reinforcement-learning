@@ -1,5 +1,6 @@
 import os
 import io
+
 from threading import Thread
 from typing import List
 from PIL import Image

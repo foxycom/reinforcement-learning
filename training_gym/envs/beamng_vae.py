@@ -10,8 +10,6 @@ from gym.utils import seeding
 from config import INPUT_DIM, MIN_STEERING, MAX_STEERING, MAX_STEERING_DIFF, JERK_REWARD_WEIGHT
 from .beamng_sim import Simulation
 
-#from client.aiExchangeMessages_pb2 import SimStateResponse
-
 
 class BeamNGenv(gym.Env):
     """
