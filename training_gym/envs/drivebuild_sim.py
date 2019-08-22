@@ -2,8 +2,8 @@ import io
 import numpy as np
 from PIL import Image
 
-from config import THROTTLE_REWARD_WEIGHT, CRASH_SPEED_WEIGHT, REWARD_CRASH, ROI, REWARD_STEP, MAX_DIST
-from client.aiExchangeMessages_pb2 import SimStateResponse, Control, SimulationID, VehicleID, DataRequest
+from config import CRASH_SPEED_WEIGHT, REWARD_CRASH, ROI
+from client.aiExchangeMessages_pb2 import Control, DataRequest
 from client.AIExchangeService import get_service
 
 
