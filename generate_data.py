@@ -2,13 +2,15 @@ from beamngpy import BeamNGpy, Scenario, Vehicle, Road
 from beamngpy.sensors import Camera
 from config import CAMERA_HEIGHT, CAMERA_WIDTH, FOV
 import numpy as np
+import os
 import cv2
 from training_gym.envs.beamng_sim import TrainingRoad, ASFAULT_PREFAB, update_prefab, RoadPoint
 
+bng_home = os.environ['BEAMNG_HOME']
 road = TrainingRoad(ASFAULT_PREFAB)
 road.calculate_road_line(back=True)
 
-bng = BeamNGpy('localhost', 64256, home='C:\\Users\\Tim\\Documents\\BeamNG.research')
+bng = BeamNGpy('localhost', 64256, home=bng_home)
 scenario = Scenario('smallgrid', 'train')
 scenario.add_road(road.asphalt)
 scenario.add_road(road.mid_line)
@@ -41,15 +43,18 @@ bng.start_scenario()
 vehicle.ai_set_mode('span')
 vehicle.ai_set_speed(5)
 vehicle.ai_set_line([{'pos': node.pos(), 'speed': 10} for node in road.road_line])
+
 number_of_images = 0
 while number_of_images < 9000:
+    bng.poll_sensors(vehicle)
     number_of_images += 1
-    print(number_of_images)
+    #print(number_of_images)
     bng.step(1)
     sensors = bng.poll_sensors(vehicle)
     image = sensors['front_camera']['colour'].convert('RGB')
     image = np.array(image)
     image = image[:, :, ::-1]
-    cv2.imwrite('C:\\Users\\Tim\\PycharmProjects\\reinforcement-learning\\datasets\\{}.jpg'.format(number_of_images), image)
+    dist = road.dist_to_center(vehicle.state['pos'])
+    cv2.imwrite('datasets\\{}.jpg'.format(number_of_images), image)
 
 bng.close()

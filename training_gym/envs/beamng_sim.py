@@ -10,7 +10,7 @@ from threading import Thread
 
 from config import THROTTLE_REWARD_WEIGHT, CRASH_SPEED_WEIGHT, REWARD_CRASH, \
     BEAMNG_HOME, ROI, CAMERA_WIDTH, CAMERA_HEIGHT, SPS, STEPS_INTERVAL, FOV, \
-    REWARD_STEP, MAX_DIST
+    REWARD_STEP, MAX_DIST, MAX_VELOCITY, MID_DIST_PENALTY_WEIGHT
 from shapely.geometry import Point, LineString
 from .roadnodes import RoadNodes
 
@@ -213,6 +213,16 @@ class TrainingRoad(object):
         line = LineString(self.road_line)
         return pos.distance(line)
 
+    def head_angle(self, vehicle_pos, vehicle_dir):
+        closest_waypoint = self.closest_waypoint(vehicle_pos)
+        road_dir = closest_waypoint.dir()
+        road_dir = self._unit_vector(road_dir)
+        vehicle_dir = self._unit_vector(vehicle_dir)
+        return np.arccos(np.clip(np.dot(road_dir, vehicle_dir), -1.0, 1.0))
+
+    def _unit_vector(self, v):
+        return v / np.linalg.norm(v)
+
     def calculate_waypoint(self, left_v, right_v):
         left_v = np.array(left_v[:2])
         right_v = np.array(right_v[:2])
@@ -274,7 +284,7 @@ class Simulation(object):
         self.done = False
         self.last_action = (0.0, 0.0)
         self.bng = BeamNGpy('localhost', 64257, home=BEAMNG_HOME)
-        self.scenario = Scenario('train', 'train', authors='Vsevolod Tymofyeyev',
+        self.scenario = Scenario('smallgrid', 'train', authors='Vsevolod Tymofyeyev',
                                  description='Reinforcement learning')
 
         self.road = TrainingRoad(ASFAULT_PREFAB)
@@ -319,7 +329,6 @@ class Simulation(object):
         throttle = throttle.item()
         self.last_action = action
         self.step += 1
-
         self.vehicle.control(steering=steering, throttle=throttle, brake=0.0)
         self.bng.step(STEPS_INTERVAL)
 
@@ -328,11 +337,9 @@ class Simulation(object):
         throttle = self.last_action[1]
         velocity = self.velocity()  # km/h
         if not done:
-            reward = REWARD_STEP - 1.2 * dist + THROTTLE_REWARD_WEIGHT * throttle
-            #print("Line reward: {}".format(REWARD_STEP - 0.5 * dist))
+            reward = REWARD_STEP + THROTTLE_REWARD_WEIGHT * throttle #- MID_DIST_PENALTY_WEIGHT * dist
         else:
             reward = REWARD_CRASH - CRASH_SPEED_WEIGHT * throttle
-
         return reward
 
     def observe(self):
@@ -349,10 +356,12 @@ class Simulation(object):
 
         #done = self.done
         pos = self.vehicle.state['pos']
+        dir = self.vehicle.state['dir']
         self.refresh_dist(pos)
         self.last_pos = pos
         dist = self.road.dist_to_center(self.last_pos)
-        done = dist > MAX_DIST
+        #velocity = self.velocity()
+        done = dist > MAX_DIST #or velocity > MAX_VELOCITY
         reward = self._reward(done, dist)
 
         return state, reward, done, {}

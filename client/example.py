@@ -10,7 +10,7 @@ from client.aiExchangeMessages_pb2 import SimulationID, TestResult, VehicleID
 def _handle_vehicle(sid: SimulationID, vid: VehicleID, requests: List[str]) -> None:
 
     i = 0
-    while i < 100:
+    while i < 3:
         i += 1
         print(sid.sid + ": Test status: " + service.get_status(sid))
         print(vid.vid + ": Wait")
@@ -23,7 +23,7 @@ def _handle_vehicle(sid: SimulationID, vid: VehicleID, requests: List[str]) -> N
         byte_im = data.data['egoFrontCamera'].camera.color
         image = Image.open(io.BytesIO(byte_im))
         image.convert("RGB")
-        image.save("imgs/{}.png".format(i), "PNG")
+        #image.save("imgs/{}.png".format(i), "PNG")
         print(vid.vid + ": Wait for control")
         control = Control()
         control.avCommand.accelerate = 1
@@ -36,6 +36,7 @@ def _handle_vehicle(sid: SimulationID, vid: VehicleID, requests: List[str]) -> N
 
     sim_state = service.wait_for_simulator_request(sid, vid)  # wait()
     if sim_state is SimStateResponse.SimState.RUNNING:
+
         result = TestResult()
         result.result = TestResult.Result.FAILED
         service.control_sim(sid, result)

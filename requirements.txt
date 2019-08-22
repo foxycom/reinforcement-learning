@@ -1,14 +1,13 @@
-shapely
-beamngpy
+#shapely
+#beamngpy
 PyYAML
 mpi4py
 numpy
-# tensorflow==1.10.1
+tensorflow-gpu
 pillow
 gym
 stable-baselines
 pytablewriter
-# -e git+git@github.com:tawnkramer/donkey.git@faa4a32b2aff452c6b46474029ea9e4b3168843d#egg=donkeycar
 opencv-python
 cloudpickle
 pygame
@@ -16,4 +15,3 @@ joblib
 tqdm
 protobuf
 flask
-keyboard

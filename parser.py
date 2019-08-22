@@ -1,4 +1,8 @@
 import re
+import os
+
+bng_home = os.environ['BEAMNG_HOME']
+path = os.path.join(bng_home, "levels\\asfault\\scenarios\\asfault.prefab")
 
 
 def extract_node(line):
@@ -12,7 +16,7 @@ def extract_node(line):
         return None
 
 
-with open('C:\\Users\\Tim\\Documents\\BeamNG.research\\levels\\asfault\\scenarios\\asfault.prefab', 'r') as file:
+with open(path, 'r') as file:
     nodes = list()
     for line in file:
         if "new DecalRoad(street_1) {" in line:

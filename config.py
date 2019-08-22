@@ -1,8 +1,12 @@
+from training_gym.level import Level
+
+LEVEL_NAME = Level.PURE
+
 # Steps per second
 SPS = 60
 
 # Steps between observations
-STEPS_INTERVAL = 6
+STEPS_INTERVAL = 3
 
 FOV = 120
 
@@ -22,11 +26,13 @@ N_CHANNELS = 3
 INPUT_DIM = (IMAGE_HEIGHT, IMAGE_WIDTH, N_CHANNELS)
 
 # Reward parameters
-THROTTLE_REWARD_WEIGHT = 0.05
+THROTTLE_REWARD_WEIGHT = 0.1
+
+MID_DIST_PENALTY_WEIGHT = 0.7
 
 # Max distance to the center of the lane
-MAX_DIST = 1#1.3
-
+MAX_DIST = 0.9
+MAX_VELOCITY = 40
 # Desired velocity in km/h
 TARGET_VELOCITY = 50
 VELOCITY_WEIGHT = 0.1
@@ -42,7 +48,7 @@ REWARD_STEP = 1
 # Negative reward for getting off the road
 REWARD_CRASH = -10
 # Penalize the agent even more when being fast
-CRASH_SPEED_WEIGHT = 7
+CRASH_SPEED_WEIGHT = 5
 
 
 # Symmetric command
@@ -54,7 +60,7 @@ CHECKPOINTS = False
 # Simulation config
 MIN_THROTTLE = 0.1
 # max_throttle: 0.6 for level 0 and 0.5 for level 1
-MAX_THROTTLE = 0.4 #0.45
+MAX_THROTTLE = 0.15 #0.45
 # Number of past commands to concatenate with the input
 N_COMMAND_HISTORY = 20 #20
 # Max cross track error (used in normal mode to reset the car)

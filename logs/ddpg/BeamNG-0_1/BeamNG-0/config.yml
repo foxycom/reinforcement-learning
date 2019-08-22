@@ -22,9 +22,9 @@
   - - z_size
     - 64
   - - MIN_THROTTLE
-    - 0.1
+    - 0.05
   - - MAX_THROTTLE
-    - 0.4
+    - 0.2
   - - FRAME_SKIP
     - 1
   - - MAX_CTE_ERROR
