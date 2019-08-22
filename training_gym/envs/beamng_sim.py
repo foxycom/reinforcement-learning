@@ -284,7 +284,7 @@ class Simulation(object):
         self.done = False
         self.last_action = (0.0, 0.0)
         self.bng = BeamNGpy('localhost', 64257, home=BEAMNG_HOME)
-        self.scenario = Scenario('smallgrid', 'train', authors='Vsevolod Tymofyeyev',
+        self.scenario = Scenario('train', 'train', authors='Vsevolod Tymofyeyev',
                                  description='Reinforcement learning')
 
         self.road = TrainingRoad(ASFAULT_PREFAB)

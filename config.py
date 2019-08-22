@@ -1,12 +1,12 @@
 from training_gym.level import Level
 
-LEVEL_NAME = Level.PURE
+LEVEL_NAME = Level.GRAS
 
 # Steps per second
-SPS = 60
+SPS = 100
 
 # Steps between observations
-STEPS_INTERVAL = 3
+STEPS_INTERVAL = 2
 
 FOV = 120
 

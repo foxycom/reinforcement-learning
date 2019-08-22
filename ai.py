@@ -56,4 +56,3 @@ class DDPGAI(object):
                 # clean up
                 self.env.reset()
                 break
-

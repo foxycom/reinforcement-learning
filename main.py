@@ -1,18 +1,4 @@
 from ai import DDPGAI
-from client.aiExchangeMessages_pb2 import SimulationID, VehicleID
-
-ai = DDPGAI()
-
-sid = SimulationID()
-sid.sid = "some simulation id"
-
-vid = VehicleID()
-vid.vid = "ego"
-
-ai.start(sid, vid)
-
-
-
 import os
 from client.AIExchangeService import get_service
 from client.aiExchangeMessages_pb2 import SimStateResponse, Control, SimulationID, VehicleID, DataRequest
