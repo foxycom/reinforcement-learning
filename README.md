@@ -42,9 +42,10 @@ Pure smallgrid        | Smallgrid filled with gras
 
 By default a VAE and an agent trained on in gras mode are used.
 In ```config.py``` it is defined as ```LEVEL_NAME = Level.GRAS```.
-Change it to ```LEVEL_NAME = Level.PURE``` in order to use the VAE and the agent which were trained in the pure smallgrid environment.
+Change it to ```LEVEL_NAME = Level.PURE``` in order to use the VAE and the agent which were trained in the pure smallgrid environment. 
+Make sure to use the correct mode, otherwise you may encounter some weird behavior. **(Note: the agent which was trained in the pure smallgrid environment performs much worse than the ones trained in the gras environment)**
 
-### Camera position
+### Camera properties
 During the training the front camera was used with these properties:
 1. Position: ```(0, 1.4, 1.8)``` 
 2. Direction: ```(0, 1, -0.23)``` 
