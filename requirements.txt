@@ -1,5 +1,5 @@
 #shapely
-#beamngpy
+beamngpy
 PyYAML
 mpi4py
 numpy
