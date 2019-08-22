@@ -38,11 +38,18 @@ For both environments the same road materials were used:
 Pure smallgrid        | Smallgrid filled with gras
 :-------------------------:|:-------------------------:
 ![result](content/pure_mode.gif)  | ![result](content/gras_mode.gif)
-
+```LEVEL_NAME = Level.PURE``` | ```LEVEL_NAME = Level.GRAS``` 
 
 By default a VAE and an agent trained on in gras mode are used.
 In ```config.py``` it is defined as ```LEVEL_NAME = Level.GRAS```.
 Change it to ```LEVEL_NAME = Level.PURE``` in order to use the VAE and the agent which were trained in the pure smallgrid environment.
+
+### Camera position
+During the training the front camera was used with these properties:
+1. Position: ```(0, 1.4, 1.8)``` 
+2. Direction: ```(0, 1, -0.23)``` 
+3. Field of view (FOV): ```120```
+4. Resolution (Width, Height): ```(160, 120)```
 
 ## Credits
 Related Paper: ["Learning to Drive in a Day"](https://arxiv.org/pdf/1807.00412.pdf).
