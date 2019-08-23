@@ -4,9 +4,14 @@ This is a version of [araffin's](https://github.com/araffin) reinforcement learn
 
 
 
-## Using trained AI with DriveBuild
-0. Import the ```DDPGAI``` class from ```ai.py``` in the root directory
-1. Instantiate an object and execute the ```.start(sid, vid)``` method
+## Install and use trained AI with DriveBuild
+0. Install the dependencies
+```pip install -r requirements.txt```
+1. Most probably ```Shapely``` is going to make troubles during the installation. If you use Anaconda, you can install Shapely by executing
+```conda install shapely```
+in your conda environment. Otherwise, please, follow the instructions from [this](https://gis.stackexchange.com/questions/62925/why-is-shapely-not-installing-correctly/62931#62931) post.
+2. Import the ```DDPGAI``` class from ```ai.py``` (root directory)
+3. Instantiate an object and execute the ```.start(sid, vid)``` method
 
 ```
 from ai import DDPGAI
@@ -56,9 +61,7 @@ During the training the front camera was used with these properties:
 
 ### Notes
 Shapely has to be installed in order the train module to work. However, it is known to make troubles on Windows. 
-If you use Anaconda, you can install Shapely by executing
-```conda install shapely```
-in your conda environment. Otherwise, please, follow the instructions from [this](https://gis.stackexchange.com/questions/62925/why-is-shapely-not-installing-correctly/62931#62931) post.
+
 
 ## Credits
 Related Paper: ["Learning to Drive in a Day"](https://arxiv.org/pdf/1807.00412.pdf).
