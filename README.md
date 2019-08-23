@@ -47,7 +47,7 @@ Pure smallgrid        | Smallgrid filled with grass
 ![result](content/pure_mode.gif)  | ![result](content/grass_mode.gif)
 ```LEVEL_NAME = Level.PURE``` | ```LEVEL_NAME = Level.GRASS``` 
 
-By default a VAE and an agent trained on in grass mode are used.
+By default a VAE and an agent trained in the grass environment are used.
 In ```config.py``` it is defined as ```LEVEL_NAME = Level.GRASS```.
 Change it to ```LEVEL_NAME = Level.PURE``` in order to use the VAE and the agent which were trained in the pure smallgrid environment. 
 Make sure to use the correct mode, otherwise you may encounter some weird behavior. **(Note: the agent which was trained in the pure smallgrid environment performs much worse than the ones trained in the grass environment)**
