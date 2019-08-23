@@ -59,10 +59,6 @@ During the training the front camera was used with these properties:
 3. Field of view (FOV): ```120```
 4. Resolution (Width, Height): ```(160, 120)```
 
-### Notes
-Shapely has to be installed in order the train module to work. However, it is known to make troubles on Windows. 
-
-
 ## Credits
 Related Paper: ["Learning to Drive in a Day"](https://arxiv.org/pdf/1807.00412.pdf).
 
