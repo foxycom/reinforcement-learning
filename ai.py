@@ -1,5 +1,6 @@
 import gym
 import numpy as np
+import os
 from drivebuildclient.AIExchangeService import AIExchangeService
 from drivebuildclient.aiExchangeMessages_pb2 import SimulationID, VehicleID
 
@@ -9,7 +10,7 @@ from stable_baselines.common import set_global_seeds
 from utils.utils import create_test_env, get_saved_hyperparams
 from config import LEVEL_NAME
 
-STATS_PATH = "logs\\ddpg\\BeamNG-0_1\\BeamNG-0"
+STATS_PATH = os.path.join(os.path.dirname(__file__), "logs", "ddpg", "BeamNG-0_1", "BeamNG-0")
 
 
 class DDPGAI(object):
