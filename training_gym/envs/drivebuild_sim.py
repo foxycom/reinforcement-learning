@@ -1,19 +1,19 @@
 import io
 import numpy as np
 from PIL import Image
+from drivebuildclient.AIExchangeService import AIExchangeService
 
 from config import CRASH_SPEED_WEIGHT, REWARD_CRASH, ROI
-from client.aiExchangeMessages_pb2 import Control, DataRequest
-from client.AIExchangeService import get_service
+from drivebuildclient.aiExchangeMessages_pb2 import Control, DataRequest
 
 
 class Simulation(object):
 
-    def __init__(self) -> None:
+    def __init__(self, service: AIExchangeService) -> None:
         super().__init__()
 
         self.last_action = (0, 0)
-        self.service = get_service()
+        self.service = service
         self.sid = None
         self.vid = None
 

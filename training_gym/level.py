@@ -7,13 +7,15 @@ class Level(Enum):
     PURE = 1
 
     def vae(self):
+        from os.path import join, dirname
         if self is Level.GRASS:
-            return "models\\lines-vae.pkl"
+            return join(dirname(__file__), "..", "models", "lines-vae.pkl")
         elif self is Level.PURE:
-            return "models\\smallgrid-lines-vae.pkl"
+            return join(dirname(__file__), "..", "models", "smallgrid-lines-vae.pkl")
 
     def model(self):
+        from os.path import join, dirname
         if self is Level.GRASS:
-            return "models\\lines-agent.pkl"
+            return join(dirname(__file__), "..", "models", "lines-agent.pkl")
         elif self is Level.PURE:
-            return "models\\smallgrid-lines-agent.pkl"
+            return join(dirname(__file__), "..", "models", "smallgrid-lines-agent.pkl")
