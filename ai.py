@@ -44,7 +44,7 @@ class DDPGAI(object):
 
         while True:
             print(sid.sid + ": Test status: " + self.service.get_status(sid))
-            print(vid + ": Wait")
+            print(vid.vid + ": Wait")
 
             sim_state = self.simulation.wait()
             if sim_state is SimStateResponse.SimState.RUNNING:
