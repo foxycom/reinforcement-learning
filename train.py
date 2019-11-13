@@ -4,6 +4,7 @@ import argparse
 import os
 import time
 from collections import OrderedDict
+from os.path import join, dirname
 from pprint import pprint
 
 import numpy as np
@@ -62,8 +63,9 @@ elif args.random_features:
 else:
     print("Learning from pixels...")
 
+hyperparams_path = join(dirname(__file__), "hyperparams", "{}.yml")
 # Load hyperparameters from yaml file
-with open('C:\\Users\\Tim\\PycharmProjects\\reinforcement-learning\\hyperparams\\{}.yml'.format(args.algo), 'r') as f:
+with open(hyperparams_path.format(args.algo), 'r') as f:
     hyperparams = yaml.load(f)[BASE_ENV]
 
 

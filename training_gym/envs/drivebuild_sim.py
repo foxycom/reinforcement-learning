@@ -18,6 +18,12 @@ class Simulation(object):
         self.vid = None
 
     def take_action(self, action):
+        """
+        Execute a given action.
+
+        :param action: ([float])
+        :return: (None)
+        """
         steering, throttle = action
         steering = steering.item()
         throttle = throttle.item()
@@ -30,11 +36,21 @@ class Simulation(object):
         self.service.control(self.sid, self.vid, control)
 
     def _reward(self):
+        """
+        Get the reward value.
+
+        :return: (float)
+        """
         throttle = self.last_action[1]
         reward = REWARD_CRASH - CRASH_SPEED_WEIGHT * throttle
         return reward
 
     def observe(self):
+        """
+        Observe the current state.
+
+        :return: (np.ndarray, float, bool, dict)
+        """
         request = DataRequest()
         request.request_ids.extend(["egoFrontCamera"])
         data = self.service.request_data(self.sid, self.vid, request)

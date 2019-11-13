@@ -1,4 +1,5 @@
 from enum import Enum
+from os.path import join, dirname
 
 
 class Level(Enum):
@@ -7,7 +8,6 @@ class Level(Enum):
     PURE = 1
 
     def vae(self):
-        from os.path import join, dirname
         if self is Level.GRASS:
             return join(dirname(__file__), "..", "models", "lines-vae.pkl")
         elif self is Level.PURE:

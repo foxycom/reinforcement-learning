@@ -14,6 +14,9 @@ STATS_PATH = os.path.join(os.path.dirname(__file__), "logs", "ddpg", "BeamNG-0_1
 
 
 class DDPGAI(object):
+    """
+    Comply with the DriveBuild's API, which is used to BeamNG in the cloud and evaluate a state locally.
+    """
     def __init__(self, service: AIExchangeService):
         set_global_seeds(0)
 
@@ -67,6 +70,9 @@ class DDPGAI(object):
 
 
 class DDPGAILocal(object):
+    """
+    Wrap a local installation of BeamNG.
+    """
     def __init__(self):
         set_global_seeds(0)
 
@@ -80,15 +86,20 @@ class DDPGAILocal(object):
         )
         self.model = DDPG.load(LEVEL_NAME.model())
 
-    def start(self, sid: SimulationID, vid: VehicleID) -> None:
+    def start(self) -> None:
+        """
+        Start a local environment.
 
+        :return None.
+        """
         running_reward = 0.0
         ep_len = 0
         obs = self.env.reset()
 
         while True:
                 action, _ = self.model.predict(obs, deterministic=True)
-                # Clip Action to avoid out of bound errors
+
+                # Clips action to avoid out of bound errors.
                 if isinstance(self.env.action_space, gym.spaces.Box):
                     action = np.clip(
                         action, self.env.action_space.low, self.env.action_space.high

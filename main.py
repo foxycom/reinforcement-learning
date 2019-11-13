@@ -16,9 +16,6 @@ except KeyError:
 
 # Send tests
 sids = service.run_tests(username, password, "client/xmls/criteriaA.dbc.xml", "client/xmls/environmentA.dbe.xml")
-# -> Response status: 500
-print(sids)
-print("Tests sent")
 
 # Interact with a simulation
 if not sids:
@@ -31,6 +28,6 @@ sid = SimulationID()
 sid.sid = sids.sids[0]
 
 
-ai = DDPGAI()
+ai = DDPGAI(service)
 
 ai.start(sid, vid)
